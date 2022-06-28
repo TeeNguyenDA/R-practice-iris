@@ -1,0 +1,88 @@
+---
+title: 'R-practice-iris'
+---
+
+`iris` data set gives the measurements in centimeters of the variables sepal length, sepal width, petal length and petal width, respectively, for 50 flowers from each of 3 species of iris. The species are Iris setosa, versicolor, and virginica.
+
+Install the `iris` data set on your computer using the command `install.packages("datasets")`. Then load the `datasets` package into your session using the following command.
+
+```{r}
+library(datasets)
+```
+
+a)  Display the first 6 rows of the `iris` data set
+
+```{r}
+# Use head() to get the first 6 rows of the `iris` data set
+head(iris)
+```
+
+b)  Compute the average of the first four variables (Sepal.Length, Sepal.Width, Petal.Length and Petal.Width) using `sapply()` function.
+
+```{r}
+# Use sapply()` function for the average of the first four variable
+sapply(iris[1:4], mean, na.rm=T)
+```
+
+c)  Show how to use R to replace the missing values in this dataset with plausible ones.
+
+```{r}
+# Check the number of missing values in this dataset
+sum(is.na(iris)) # 0 missing values
+# If the missing values do exist, replace the missing value with 0
+iris[is.na(iris)] = 0
+# Or we can replace the missing value with the mean, median 
+# It depends on if we detect many outliers or not in the dataset
+# Checking outliers can be done by plotting
+```
+
+d)  Compute the standard deviation for only the first and the fourth variables (Sepal.Length and Petal.Length)
+
+```{r}
+# The 4th column should be "Petal.Width"
+sapply(iris[,c("Sepal.Length", "Petal.Width")], sd, na.rm=T)
+```
+
+e)  Construct a boxplot for `Sepal.Length` and `Sepal.Width` variables, then display the values of all the outliers.
+
+```{r}
+
+# Assign sepalLW to a new data frame with the Sepal.Length, Sepal.Width variables
+sepalLW <- data.frame(Sepal.Length = iris$Sepal.Length, Sepal.Width = iris$Sepal.Width)
+
+# Boxplot for `Sepal.Length` and `Sepal.Width`, assigned to myBoxPlot
+# Set outline = TRUE to display the values of all the outliers
+myBoxPlot <- boxplot(sepalLW,
+                     main = "Iris Sepal Length and Sepal Width",
+                     outline = TRUE)
+# View those outliers
+myBoxPlot$out
+```
+
+f)  Compute the upper quartile of the `Sepal.Width` variable with two different methods
+
+```{r}
+# Method 1: Compute the upper quartile of `Sepal.Width` by summary()
+# Use the summary() function on `Sepal.Width` column
+# Output is a statistical table
+summary(iris$Sepal.Width)
+# Extract "3rd Qu." column for the upper quartile
+summary(iris$Sepal.Width)["3rd Qu."]
+
+# Method 2: Compute the upper quartile of `Sepal.Width`(Q3, 75% of the data distribution) by the quantile function
+quantile(iris$Sepal.Width, .75)
+```
+
+g)  Construct a pie chart to describe the species with 'Sepal.Width' less than 4 centimeters.
+
+```{r}
+# Filter the iris dataset with 'Sepal.Width' < 4 centimeters
+filteredSepalW <- iris[(iris$Sepal.Width < 4), ]
+# Use table() function to count the occurences of each factor level of `Species`
+countTable <- table(filteredSepalW$Species)
+# Make a pie chart of the species with given condition
+pie(
+  countTable,
+  radius = 1,
+  main = "Species with Sepal Width less than 4 centimeters")
+```
